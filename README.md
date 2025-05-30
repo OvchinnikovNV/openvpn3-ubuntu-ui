@@ -40,4 +40,4 @@ Categories=Utility;
 
 ## Дополнительная информация
 
-Логи записываются в `/tmp/openvpn3-ubuntu-ui/logs/`
+Логи записываются в `/home/{USERNAME}/.local/state/openvpn3-ubuntu-ui/`

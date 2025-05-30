@@ -7,7 +7,7 @@ from logger import logger
 
 
 class ConnectionsFile:
-    file_path = (Path('/tmp') / "openvpn3-ubuntu-ui" / "connections.json")
+    file_path = (Path.home() / ".config" / "openvpn3-ubuntu-ui" / "connections.json")
 
     @classmethod
     def get(cls) -> list[dict]:
