@@ -40,4 +40,9 @@ Categories=Utility;
 
 ## Дополнительная информация
 
-Логи записываются в `/home/{USERNAME}/.local/state/openvpn3-ubuntu-ui/`
+1. Логи записываются в `/home/{USERNAME}/.local/state/openvpn3-ubuntu-ui/`
+
+2. Возможно, потребуется установить библиотеки:
+```
+sudo apt-get install libxcb-cursor0 libxcb-xinerama0 libxcb-icccm4 libxcb-keysyms1 libxcb-render-util0 libxcb-xkb1
+```
