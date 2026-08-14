@@ -11,9 +11,30 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Connections</string>
+   <string>Manage profiles</string>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>640</width>
+    <height>320</height>
+   </size>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
+   <property name="spacing">
+    <number>12</number>
+   </property>
+   <property name="leftMargin">
+    <number>16</number>
+   </property>
+   <property name="topMargin">
+    <number>16</number>
+   </property>
+   <property name="rightMargin">
+    <number>16</number>
+   </property>
+   <property name="bottomMargin">
+    <number>16</number>
+   </property>
    <item>
     <widget class="QTableWidget" name="table">
      <property name="selectionMode">
@@ -62,7 +83,7 @@
      <item>
       <widget class="QPushButton" name="btn_new">
        <property name="text">
-        <string>New connection</string>
+        <string>Add profile</string>
        </property>
       </widget>
      </item>

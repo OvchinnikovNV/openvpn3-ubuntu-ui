@@ -1,7 +1,14 @@
-import sys
 import time
-from PyQt6.QtCore import pyqtSignal, QObject
-from PyQt6.QtWidgets import QDialog, QWidget, QFileDialog, QTableWidgetItem, QStyledItemDelegate, QHeaderView
+
+from PyQt6.QtCore import QObject, pyqtSignal
+from PyQt6.QtWidgets import (
+    QDialog,
+    QFileDialog,
+    QHeaderView,
+    QStyledItemDelegate,
+    QTableWidgetItem,
+    QWidget,
+)
 
 from logger import logger
 from ui.pyuic.manager import Ui_Manager
@@ -25,12 +32,9 @@ class Manager(QDialog):
         self.ui.table.setItemDelegateForColumn(1, NonEditableDelegate(self.ui.table))
         self.ui.table.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeMode.ResizeToContents)
 
-        """ Get connections and update table """
-        self.connections: list[dict] = connections
-        self.update_table()
-
-        """ Init emitter and connect signals """
+        self.connections = connections
         self.emitter = ManagerEmitter()
+        self.update_table()
         self.connect_slots()
 
     def connect_slots(self):
@@ -40,51 +44,38 @@ class Manager(QDialog):
         self.ui.table.cellDoubleClicked.connect(self.on_table_item_double_clicked)
 
     def update_table(self):
-        self.ui.table.clearContents()
+        self.ui.table.setRowCount(0)
         for row, connection in enumerate(self.connections):
-            self.insert_connection_row(row, connection.get('name', '#ERROR'), connection.get('file', '#ERROR'))
+            self._insert_row(row, connection.get('name', '#ERROR'), connection.get('file', '#ERROR'))
 
-    def insert_connection_row(self, row: int, name: str, file: str):
+    def _insert_row(self, row: int, name: str, file: str):
         self.ui.table.insertRow(row)
         self.ui.table.setItem(row, 0, QTableWidgetItem(name))
         self.ui.table.setItem(row, 1, QTableWidgetItem(file))
 
-    def fill_connections_table(self, connections: list[dict]):
-        try:
-            for i, connection in enumerate(connections):
-                self.insert_connection_row(i, connection["name"], connection["file"])
-        except Exception as e:
-            logger.exception(e)
-            sys.exit(1)
-
-    def get_openvpn_filename(self) -> str:
+    def _pick_config_file(self) -> str:
         file_path, _ = QFileDialog.getOpenFileName(
             parent=self,
-            caption="Choose connection file",
-            directory="",
-            filter="Configurations (*.ovpn)",
+            caption='Choose connection file',
+            filter='Configurations (*.ovpn)',
         )
         return file_path
 
     def on_btn_new(self):
-        file_path = self.get_openvpn_filename()
+        file_path = self._pick_config_file()
         if not file_path:
             return
 
-        connection_name = f"Connection-{int(time.time())}"
-        self.connections.append({
-            "name": connection_name,
-            "file": file_path,
-        })
+        connection_name = f'Connection-{int(time.time())}'
+        self.connections.append({'name': connection_name, 'file': file_path})
         ConnectionsFile.write(self.connections)
-        self.insert_connection_row(self.ui.table.rowCount(), connection_name, file_path)
+        self._insert_row(self.ui.table.rowCount(), connection_name, file_path)
         self.emitter.connections_changed.emit(self.connections)
 
     def on_btn_delete(self):
-        """Возвращает индекс выделенной строки или None"""
         selected = self.ui.table.selectedItems()
         if not selected:
-            return None
+            return
 
         try:
             row = selected[0].row()
@@ -95,19 +86,15 @@ class Manager(QDialog):
         except Exception as e:
             logger.exception(e)
 
-        return None
-
-
-
     def on_table_item_changed(self, row: int, col: int):
         if col > 0:
             return
 
-        for i, connection in enumerate(self.connections):
-            if i == row:
-                self.connections[i]['name'] = self.ui.table.item(row, col).text()
-                break
+        item = self.ui.table.item(row, col)
+        if item is None:
+            return
 
+        self.connections[row]['name'] = item.text()
         ConnectionsFile.write(self.connections)
         self.emitter.connections_changed.emit(self.connections)
 
@@ -115,15 +102,11 @@ class Manager(QDialog):
         if col != 1:
             return
 
-        file_path = self.get_openvpn_filename()
+        file_path = self._pick_config_file()
         if not file_path:
             return
 
         self.ui.table.setItem(row, col, QTableWidgetItem(file_path))
-        for i, connection in enumerate(self.connections):
-            if i == row:
-                self.connections[i]['file'] = file_path
-                break
-
+        self.connections[row]['file'] = file_path
         ConnectionsFile.write(self.connections)
         self.emitter.connections_changed.emit(self.connections)
