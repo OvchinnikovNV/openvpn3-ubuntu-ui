@@ -13,7 +13,10 @@ class Ui_Manager(object):
     def setupUi(self, Manager):
         Manager.setObjectName("Manager")
         Manager.resize(800, 300)
+        Manager.setMinimumSize(QtCore.QSize(640, 320))
         self.verticalLayout = QtWidgets.QVBoxLayout(Manager)
+        self.verticalLayout.setContentsMargins(16, 16, 16, 16)
+        self.verticalLayout.setSpacing(12)
         self.verticalLayout.setObjectName("verticalLayout")
         self.table = QtWidgets.QTableWidget(parent=Manager)
         self.table.setSelectionMode(QtWidgets.QAbstractItemView.SelectionMode.SingleSelection)
@@ -44,10 +47,10 @@ class Ui_Manager(object):
 
     def retranslateUi(self, Manager):
         _translate = QtCore.QCoreApplication.translate
-        Manager.setWindowTitle(_translate("Manager", "Connections"))
+        Manager.setWindowTitle(_translate("Manager", "Manage profiles"))
         item = self.table.horizontalHeaderItem(0)
         item.setText(_translate("Manager", "Name"))
         item = self.table.horizontalHeaderItem(1)
         item.setText(_translate("Manager", "File"))
         self.btn_delete.setText(_translate("Manager", "Delete"))
-        self.btn_new.setText(_translate("Manager", "New connection"))
+        self.btn_new.setText(_translate("Manager", "Add profile"))

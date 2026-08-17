@@ -12,7 +12,7 @@ class ConnectionsFile:
     @classmethod
     def get(cls) -> list[dict]:
         if not cls.file_path.exists():
-            return list()
+            return []
 
         try:
             with open(cls.file_path) as file:

@@ -2,9 +2,8 @@
 .venv/
 venv/
 env/
-logs/
-data/
 dist/
 build/
 **/__pycache__/
-**/*.spec
+*.py[cod]
+*.spec
